@@ -34,3 +34,15 @@ class AiInformationData(Model):
 
     class Meta:
         table = 'ai_information_data'
+
+
+class MonitorSite(Model):
+    id = fields.IntField(pk=True, generated=True, description='自增主键')
+    site = fields.CharField(max_length=255, null=True, description='监控网站')
+    latest_url = fields.TextField(null=True, description='最新URL')
+    ext = fields.TextField(null=True, description='扩展信息')
+    update_time = fields.DatetimeField(null=True, description='更新时间')
+
+    class Meta:
+        table = 'monitor_site'
+        table_description = '监控网站表'

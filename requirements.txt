@@ -8,3 +8,7 @@ beautifulsoup4~=4.13.3
 tortoise~=0.1.1
 aerich~=0.8.2
 aiomysql~=0.2.0
+# log
+loguru~=0.7.3
+
+pydantic~=2.11.2
