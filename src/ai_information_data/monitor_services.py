@@ -1,15 +1,15 @@
-from src.ai_information_data.dao import get_all_monitor_sites, get_monitor_site_by_url, update_monitor_latest_url_by_id
+from src.ai_information_data.dao import get_monitor_site, update_site
 from loguru import logger
 import requests
 from bs4 import BeautifulSoup
-from src.utils.filre_crawl_utils import scrape
+from src.utils.fire_crawl_utils import scrape
 from src.test.test6 import get_links_from_page
 
 
 async def monitor_service():
-    sites = await get_all_monitor_sites()
+    sites = await get_monitor_site()
     # global_privacy_assembly_org()
-    await edps_news()
+    await edps_news(sites)
     logger.info('edps_news finish...')
 
 
@@ -77,7 +77,7 @@ def global_privacy_assembly_org():
         logger.warning(f"请求失败，状态码: {response.status_code}")
 
 
-async def edps_news():
+async def edps_news(sites):
     url = 'https://www.edps.europa.eu/press-publications/press-news/news_en'
     logger.info('edps_news start...')
 
@@ -116,7 +116,11 @@ async def edps_news():
         return
 
     # 数据库对比最新的id
-    db_data = await get_monitor_site_by_url(url)
+    db_data = None
+    for item in sites:
+        if item['url'] == url:
+            db_data = item
+            break
     if db_data.latest_url is not None and db_data.latest_url == news_id:
         logger.info("{},没有新的数据".format(url))
         return
@@ -166,4 +170,4 @@ async def edps_news():
                     continue
 
     # 更新数据库最新的id
-    await update_monitor_latest_url_by_id(db_data.id, news_id)
+    await update_site(db_data.id, news_id)

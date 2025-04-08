@@ -1,18 +1,50 @@
-from src.settings.models import TodoUrl, AiInformationData, MonitorSite
 from datetime import datetime
+from src.utils.ai_consumer_utils import *
+from loguru import logger as log
 
 
-async def get_todo_urls(source: int):
-    return await TodoUrl.filter(status=0, source=source).all()
+def get_todo_urls(source: int):
+    return todo_urls(source)
 
+def update_status(data_id):
+    complete(data_id)
 
-async def get_all_monitor_sites():
-    return await MonitorSite.all()
+def get_failed_urls(deep: int, source: int):
+    return failed_urls(deep, source)
 
+def get_monitor_site():
+    return monitor_site_list()
 
-async def get_monitor_site_by_url(url: str):
-    return await MonitorSite.filter(site=url).first()
+def update_site(db_id, latest_url):
+    return update_site_db(db_id, latest_url)
 
-
-async def update_monitor_latest_url_by_id(db_id: int, latest_url: str):
-    return await MonitorSite.filter(id=db_id).update(latest_url=latest_url, update_time=datetime.now())
+def save_scraped_data(data, url, deep: 0, source, pid, path, ext):
+    req = AiInformationDataReq()
+    req.deep = deep
+    req.source = source
+    req.pid = pid
+    req.path = path
+    temp_data = data['data']
+    if data.get('success'):
+        metadata = temp_data.get('metadata')
+        if ext is not None:
+            metadata.update(json.loads(ext))
+        req.metadata = json.dumps(metadata, ensure_ascii=False)
+        req.title = metadata.get('title')
+        req.sourceUrl = metadata.get('sourceURL')
+        req.lang = metadata.get('language')
+        req.markdown = temp_data['markdown']
+        req.status = 'success'
+    else:
+        log.warning('scrape is failed, resp: {}'.format(data))
+        if 'metadata' in data:
+            metadata = temp_data['metadata']
+            req.metadata = json.dumps(metadata, ensure_ascii=False)
+            if 'statusCode' in metadata:
+                req.status = metadata['statusCode']
+            else:
+                req.status = 'failed'
+        else:
+            req.status = 'failed'
+            req.sourceUrl = url
+    return save(req)

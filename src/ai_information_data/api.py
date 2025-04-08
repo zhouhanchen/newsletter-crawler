@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 from loguru import logger
 from pydantic import BaseModel
-from src.ai_information_data.services import monitor_service
+from src.ai_information_data.monitor_services import monitor_service
+import src.ai_information_data.service as service
 
 
 class TodoUrlReq(BaseModel):
@@ -17,3 +18,15 @@ async def test(req: TodoUrlReq):
     logger.info('req is: {}'.format(req))
     await monitor_service()
     return {"message": "Hello World"}
+
+@api_aid.post("/todo_urls")
+async def todo_urls(req: TodoUrlReq):
+    logger.info('req is: {}'.format(req))
+    service.todo_urls(req.source)
+    return {"message": "success"}
+
+@api_aid.post("/retry")
+async def retry(req: dict):
+    logger.info('req is: {}'.format(req))
+    service.retry(req['deep'], req['source'])
+    return {"message": "success"}
