@@ -6,6 +6,6 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3009:3009"
+      - "3001:3001"
     environment:
       - TZ=Asia/Shanghai

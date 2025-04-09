@@ -13,6 +13,11 @@ class TodoUrlReq(BaseModel):
 api_aid = APIRouter()
 
 
+@api_aid.post("/hello")
+async def hello():
+    return {"message": "Hello World"}
+
+
 @api_aid.post("/test")
 async def test(req: TodoUrlReq):
     logger.info('req is: {}'.format(req))
