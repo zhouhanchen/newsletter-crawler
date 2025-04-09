@@ -1,6 +1,7 @@
-import src.ai_information_data.dao as aid_dao
-from src.utils.fire_crawl_utils import scrape
+import ai_information_data.dao as aid_dao
+from utils.fire_crawl_utils import scrape
 from loguru import logger as log
+
 
 def todo_urls(source: int):
     urls = aid_dao.todo_urls(source)

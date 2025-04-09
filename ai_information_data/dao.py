@@ -1,22 +1,26 @@
-from datetime import datetime
-from src.utils.ai_consumer_utils import *
+from utils.ai_consumer_utils import *
 from loguru import logger as log
 
 
 def get_todo_urls(source: int):
     return todo_urls(source)
 
+
 def update_status(data_id):
     complete(data_id)
+
 
 def get_failed_urls(deep: int, source: int):
     return failed_urls(deep, source)
 
+
 def get_monitor_site():
     return monitor_site_list()
 
+
 def update_site(db_id, latest_url):
     return update_site_db(db_id, latest_url)
+
 
 def save_scraped_data(data, url, deep: 0, source, pid, path, ext):
     req = AiInformationDataReq()

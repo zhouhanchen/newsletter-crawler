@@ -1,8 +1,8 @@
-from src.ai_information_data.dao import get_monitor_site, update_site
+from ai_information_data.dao import get_monitor_site, update_site
 from loguru import logger
 import requests
 from bs4 import BeautifulSoup
-from src.utils.fire_crawl_utils import scrape
+from utils.fire_crawl_utils import scrape
 from src.test.test6 import get_links_from_page
 
 
