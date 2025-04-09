@@ -3,7 +3,7 @@ from loguru import logger
 import requests
 from bs4 import BeautifulSoup
 from utils.fire_crawl_utils import scrape
-from src.test.test6 import get_links_from_page
+from test_case.test2 import get_links_from_page
 
 
 async def monitor_service():
@@ -157,7 +157,7 @@ async def edps_news(sites):
                 logger.info("找到上次爬取id，{}: url: {}, id: {},最新的id是："
                             "{}".format(url, one_data['url'], db_data.latest_url, news_id))
                 # 更新数据库最新的id
-                await update_monitor_latest_url_by_id(db_data.id, news_id)
+                await update_site(db_data.id, news_id)
                 return
             scrape_url = one_data['url']
             if scrape_url is not None:

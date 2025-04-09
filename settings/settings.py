@@ -18,7 +18,7 @@ TORTOISE_ORM = {
     'apps': {
         'models': {
             #这个models就是自己配置的models.py位置
-            'models': ['src.db.models'],
+            'models': ['db.models'],
             'default_connection': 'default',
         }
     },
