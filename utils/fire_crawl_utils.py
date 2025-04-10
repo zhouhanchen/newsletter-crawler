@@ -1,7 +1,7 @@
 import requests
 import json
 
-base_url = 'http://localhost:3002'
+base_url = 'http://47.79.23.160:3002'
 
 
 def scrape(url: str, formats=None):
