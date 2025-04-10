@@ -38,3 +38,10 @@ async def retry(req: dict):
     service.retry(req['deep'], req['source'])
     return {"message": "success"}
 
+
+@api_aid.post("/deep")
+async def deep(req: dict):
+    logger.info('req is: {}'.format(req))
+    service.deep(req)
+    return {"message": "success"}
+

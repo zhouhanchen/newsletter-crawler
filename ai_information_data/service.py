@@ -1,6 +1,7 @@
 import ai_information_data.dao as aid_dao
 from utils.fire_crawl_utils import scrape
 from loguru import logger as log
+import utils.ai_consumer_utils as ai_sdk
 
 
 def todo_urls(source: int):
@@ -36,3 +37,28 @@ def retry(deep: int, source: int):
         log.info('failed_url: {}/{}'.format(i, len(failed_data)))
         scrape_resp = scrape(item['sourceUrl'])
         aid_dao.save_scraped_data(scrape_resp, item['url'], item['deep'], item['source'], item['pid'], item['path'], ext)
+
+
+def deep(req):
+    ext = None
+    for item in aid_dao.get_monitor_site():
+        if item['id'] == req['source']:
+            ext = item['ext']
+            break
+    # 根据条件获取要爬取的urls
+    data_array = ai_sdk.deep_urls(req)
+    log.info('data_array size is {}'.format(len(data_array)))
+    for i, item in enumerate(data_array):
+        item_urls = item['urls']
+        log.info('deep_url: {}/{}, item_urls: {}'.format(i, len(data_array), len(item_urls)))
+        if len(item_urls) == 0:
+            log.info('没有要爬取的url')
+            continue
+
+        for j, url in enumerate(item_urls):
+            log.info('deep_url: {}/{}, url: {}'.format(j, len(item_urls), url))
+            scrape_resp = scrape(url)
+            aid_dao.save_scraped_data(scrape_resp, url, int(item['deep'] + 1), item['source'],
+                                      item['id'], item['path'], ext)
+
+    log.info('finish deep')
