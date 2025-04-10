@@ -28,7 +28,7 @@ def save_scraped_data(data, url, deep: 0, source, pid, path, ext):
     req.source = source
     req.pid = pid
     req.path = path
-    temp_data = data['data']
+    temp_data = data.get('data', None)
     if data.get('success'):
         metadata = temp_data.get('metadata')
         if ext is not None:

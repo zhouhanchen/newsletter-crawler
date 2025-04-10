@@ -14,13 +14,18 @@ def todo_urls(source: int):
 
     for i, item in enumerate(urls):
         log.info('todo_url: 当前进度{}/{}'.format(i, len(urls)))
-        scrape_resp = scrape(item['url'])
-        aid_dao.save_scraped_data(scrape_resp, item['url'], 0, item['source'], None, None, item['ext'])
-        if scrape_resp.get('success'):
-            data = scrape_resp.get('data')
-            metadata = data.get('metadata')
-            if metadata is not None and metadata.get('statusCode') and metadata.get('statusCode') == 200:
-                aid_dao.complete(item['id'])
+        try:
+            scrape_resp = scrape(item['url'])
+            aid_dao.save_scraped_data(scrape_resp, item['url'], 0, item['source'], None, None, item['ext'])
+            if scrape_resp.get('success'):
+                data = scrape_resp.get('data')
+                metadata = data.get('metadata')
+                if metadata is not None and metadata.get('statusCode') and metadata.get('statusCode') == 200:
+                    aid_dao.complete(item['id'])
+        except Exception as e:
+            log.warning('爬取失败: {}'.format(e))
+            aid_dao.save_scraped_data({}, item['url'], 0, source,
+                                      None, None, item['ext'])
 
 
 def retry(deep: int, source: int):
@@ -35,8 +40,16 @@ def retry(deep: int, source: int):
 
     for i, item in enumerate(failed_data):
         log.info('failed_url: {}/{}'.format(i, len(failed_data)))
-        scrape_resp = scrape(item['sourceUrl'])
-        aid_dao.save_scraped_data(scrape_resp, item['url'], item['deep'], item['source'], item['pid'], item['path'], ext)
+        try:
+            scrape_resp = scrape(item['sourceUrl'])
+            aid_dao.save_scraped_data(scrape_resp, item['sourceUrl'], item['deep'], item['source'], item['pid'],
+                                      item['path'], ext)
+        except Exception as e:
+            log.warning('爬取失败: {}'.format(e))
+            aid_dao.save_scraped_data({}, item['sourceUrl'], int(item['deep']), item['source'],
+                                      item['id'], item['path'], ext)
+
+    log.info('finish retry')
 
 
 def deep(req):
@@ -57,8 +70,13 @@ def deep(req):
 
         for j, url in enumerate(item_urls):
             log.info('deep_url: {}/{}, url: {}'.format(j, len(item_urls), url))
-            scrape_resp = scrape(url)
-            aid_dao.save_scraped_data(scrape_resp, url, int(item['deep'] + 1), item['source'],
-                                      item['id'], item['path'], ext)
+            try:
+                scrape_resp = scrape(url)
+                aid_dao.save_scraped_data(scrape_resp, url, int(item['deep'] + 1), item['source'],
+                                          item['id'], item['path'], ext)
+            except Exception as e:
+                log.warning('爬取失败: {}'.format(e))
+                aid_dao.save_scraped_data({}, url, int(item['deep'] + 1), item['source'],
+                                          item['id'], item['path'], ext)
 
     log.info('finish deep')
