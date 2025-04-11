@@ -80,3 +80,9 @@ def deep(req):
                                           item['id'], item['path'], ext)
 
     log.info('finish deep')
+
+
+def job_retry():
+    sites = aid_dao.get_monitor_site()
+    for one_site in sites:
+        retry(0, one_site['id'])

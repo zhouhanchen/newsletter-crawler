@@ -1,7 +1,7 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
-import datetime
 from loguru import logger as log
 from utils import redis_utils as redis
+from ai_information_data.service import job_retry
 
 
 def job():
@@ -11,12 +11,13 @@ def job():
         return
     redis.set_value('retry:jobs', '1')
     log.info('开始执行job')
-    print(datetime.datetime.now())
+    job_retry()
+    log.info('job执行完成')
     redis.del_value('retry:jobs')
 
 
 def init_job():
     scheduler = BlockingScheduler()
-    # 每隔5秒执行一次job函数
-    scheduler.add_job(job, 'interval', seconds=5)
+    # 一小时执行一次job函数
+    scheduler.add_job(job, 'interval', seconds=3600)
     scheduler.start()
