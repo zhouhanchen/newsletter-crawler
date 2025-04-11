@@ -19,5 +19,5 @@ def job():
 def init_job():
     scheduler = BlockingScheduler()
     # 一小时执行一次job函数
-    scheduler.add_job(job, 'interval', seconds=3600)
+    scheduler.add_job(job, 'interval', seconds=5)
     scheduler.start()

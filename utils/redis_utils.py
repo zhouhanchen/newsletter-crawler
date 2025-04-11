@@ -1,7 +1,7 @@
 import redis
 
 # 创建连接池
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379)
+pool = redis.ConnectionPool(host='47.79.23.160', port=6379, password='ZCJV0DnuYq6VXeIz')
 
 # 创建Redis实例，并设置decode_response为True
 db = redis.Redis(connection_pool=pool)

@@ -85,4 +85,4 @@ def deep(req):
 def job_retry():
     sites = aid_dao.get_monitor_site()
     for one_site in sites:
-        retry(0, one_site['id'])
+        retry(None, one_site['id'])
