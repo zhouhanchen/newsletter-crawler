@@ -10,9 +10,9 @@ app = FastAPI()
 
 log.info("Starting FastAPI application...")
 
-log.info('del redis key...')
+log.info('flush db...')
 
-redis_utils.del_value('retry:jobs')
+redis_utils.flush_db()
 
 
 app.include_router(api_aid, prefix='/aid', tags=['information_data'])
@@ -22,9 +22,8 @@ register_tortoise(app, config=TORTOISE_ORM)
 
 @app.on_event("startup")
 async def startup_event():
-    log.info("Starting up the application...")
+    log.info("Starting up init job...")
     retry_job.init_job()
-    log.info("job init successfully...")
 
 if __name__ == '__main__':
     import uvicorn

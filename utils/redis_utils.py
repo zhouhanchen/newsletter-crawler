@@ -17,6 +17,10 @@ def get_value(key):
 
 def del_value(key):
     db.delete(key)
+    db.flushdb()
+
+def flush_db():
+    db.flushdb()
 
 
 if __name__ == '__main__':
