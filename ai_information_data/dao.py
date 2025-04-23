@@ -36,9 +36,9 @@ def save_scraped_data(data, url, deep: 0, source, pid, path, ext):
         if ext is not None:
             metadata.update(json.loads(ext))
         req.metadata = json.dumps(metadata, ensure_ascii=False)
-        req.title = metadata.get('title')
+        req.title = metadata.get('title', data.get('tempTitle', None))
         req.sourceUrl = metadata.get('sourceURL')
-        req.lang = metadata.get('language')
+        req.lang = metadata.get('language', data.get('tempLang', None))
         req.markdown = temp_data['markdown']
         req.status = 'success'
     else:
@@ -57,7 +57,7 @@ def save_scraped_data(data, url, deep: 0, source, pid, path, ext):
 
 
 async def get_un_todo_urls():
-    return await TodoCleanData.filter(status=0).order_by('-create_time').limit(1)
+    return await TodoCleanData.filter(status=0).order_by('-create_time')
 
 
 async def complete_un_todo_url(url_id):

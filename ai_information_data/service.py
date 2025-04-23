@@ -4,6 +4,7 @@ import ai_information_data.dao as aid_dao
 from utils.fire_crawl_utils import scrape
 from loguru import logger as log
 import utils.ai_consumer_utils as ai_sdk
+import utils.redis_utils as redis
 
 
 def todo_urls(source: int):
@@ -93,9 +94,9 @@ def job_retry():
 async def todo_clean_data(req):
     un_todo_url = await aid_dao.get_un_todo_urls()
     log.info('un_todo_url size is {}'.format(len(un_todo_url)))
-
+    redis.set_value('un_todo_url', len(un_todo_url))
     for i, item in enumerate(un_todo_url):
-        log.info('un_todo_url: 当前进度{}/{}'.format(i, len(un_todo_url)))
+        log.info('un_todo_url: 当前进度{}/{}'.format(i+1, len(un_todo_url)))
         ext = {
             'region': item.region,
             'countryOrAreas': item.country,
@@ -108,12 +109,18 @@ async def todo_clean_data(req):
             'regionalScope': item.regional_scope
         }
         try:
-            scrape_resp = scrape(item.url)
+            todo_url = item.url if item.attachment is None else item.attachment
+            scrape_resp = scrape(todo_url)
             if item.publish_time is not None:
                 scrape_resp['publishTime'] = item.publish_time.strftime('%Y-%m-%d %H:%M:%S')
+            scrape_resp['tempTitle'] = item.title
+            scrape_resp['tempLang'] = item.lang_site
+            scrape_resp['data']['metadata']['sourceURL'] = item.url
             aid_dao.save_scraped_data(scrape_resp, item.url, 0, -1, None, None, json.dumps(ext, ensure_ascii=False))
             await aid_dao.complete_un_todo_url(item.id)
         except Exception as e:
             log.warning('爬取失败: {}'.format(e))
+
+        redis.set_value('un_todo_url', len(un_todo_url) - (i+1))
 
     return None
