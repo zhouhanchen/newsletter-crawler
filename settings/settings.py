@@ -3,11 +3,11 @@ TORTOISE_ORM = {
         'default': {
             'engine': 'tortoise.backends.mysql',  # MySQL or Mariadb
             'credentials': {
-                'host': '120.77.238.101',
+                'host': '66.112.219.229',
                 'port': '3306',
-                'user': 'root',
-                'password': '4MBdpQLupDXY',
-                'database': 'firecrawl',
+                'user': 'newsletter',
+                'password': 'HYLrKJsNF3Z&afbR',
+                'database': 'newsletter_crawler',
                 'minsize': 1,
                 'maxsize': 5,
                 'charset': 'utf8mb4',

@@ -1,4 +1,4 @@
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from loguru import logger as log
 from utils import redis_utils as redis
 from ai_information_data.service import job_retry
@@ -17,7 +17,7 @@ def job():
 
 
 def init_job():
-    scheduler = BlockingScheduler()
+    scheduler = BackgroundScheduler()
     # 一小时执行一次job函数
     scheduler.add_job(job, 'interval', seconds=3600)
     scheduler.start()

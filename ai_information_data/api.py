@@ -64,3 +64,16 @@ async def deep(req: dict):
     redis.del_value('deep')
     return {"message": "success"}
 
+
+@api_aid.post("/todo_clean_data")
+async def todo_clean_data(req: dict):
+    v = redis.get_value('todo_clean_data')
+    if v is not None:
+        logger.warning('当前有未完成的任务')
+        return {"message": "当前有未完成的任务"}
+    redis.set_value('todo_clean_data', '1')
+    logger.info('req is: {}'.format(req))
+    await service.todo_clean_data(req)
+    redis.del_value('todo_clean_data')
+    return {"message": "success"}
+

@@ -1,5 +1,6 @@
 from utils.ai_consumer_utils import *
 from loguru import logger as log
+from db.models import TodoCleanData
 
 
 def get_todo_urls(source: int):
@@ -28,6 +29,7 @@ def save_scraped_data(data, url, deep: 0, source, pid, path, ext):
     req.source = source
     req.pid = pid
     req.path = path
+    req.publishTime = data.get('publishTime', None)
     temp_data = data.get('data', None)
     if data.get('success'):
         metadata = temp_data.get('metadata')
@@ -52,3 +54,11 @@ def save_scraped_data(data, url, deep: 0, source, pid, path, ext):
             req.status = 'failed'
             req.sourceUrl = url
     return save(req)
+
+
+async def get_un_todo_urls():
+    return await TodoCleanData.filter(status=0).order_by('-create_time').limit(1)
+
+
+async def complete_un_todo_url(url_id):
+    await TodoCleanData.filter(id=url_id).update(status=1)

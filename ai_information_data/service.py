@@ -1,3 +1,5 @@
+import json
+
 import ai_information_data.dao as aid_dao
 from utils.fire_crawl_utils import scrape
 from loguru import logger as log
@@ -86,3 +88,32 @@ def job_retry():
     sites = aid_dao.get_monitor_site()
     for one_site in sites:
         retry(None, one_site['id'])
+
+
+async def todo_clean_data(req):
+    un_todo_url = await aid_dao.get_un_todo_urls()
+    log.info('un_todo_url size is {}'.format(len(un_todo_url)))
+
+    for i, item in enumerate(un_todo_url):
+        log.info('un_todo_url: 当前进度{}/{}'.format(i, len(un_todo_url)))
+        ext = {
+            'region': item.region,
+            'countryOrAreas': item.country,
+            'subjectType': item.subject_type,
+            'orgType': item.organization_type,
+            'notificationAgency': item.notification_agency,
+            'articleClass': item.article_category,
+            'identifySource': item.identification_source,
+            'siteLang': item.lang,
+            'regionalScope': item.regional_scope
+        }
+        try:
+            scrape_resp = scrape(item.url)
+            if item.publish_time is not None:
+                scrape_resp['publishTime'] = item.publish_time.strftime('%Y-%m-%d %H:%M:%S')
+            aid_dao.save_scraped_data(scrape_resp, item.url, 0, -1, None, None, json.dumps(ext, ensure_ascii=False))
+            await aid_dao.complete_un_todo_url(item.id)
+        except Exception as e:
+            log.warning('爬取失败: {}'.format(e))
+
+    return None

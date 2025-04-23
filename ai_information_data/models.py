@@ -1,5 +1,6 @@
 import json
 
+
 class AiInformationDataReq:
     def __init__(self):
         self.id = None
@@ -17,6 +18,7 @@ class AiInformationDataReq:
         self.path = None
         self.source = None
         self.failed = None
+        self.publishTime = None
 
     def to_json_str(self):
         data = {
@@ -34,6 +36,7 @@ class AiInformationDataReq:
             "pid": self.pid,
             "path": self.path,
             "source": self.source,
-            "failed": self.failed
+            "failed": self.failed,
+            "publishTime": self.publishTime
         }
         return json.dumps(data, ensure_ascii=False)

@@ -19,6 +19,7 @@ def del_value(key):
     db.delete(key)
     db.flushdb()
 
+
 def flush_db():
     db.flushdb()
 

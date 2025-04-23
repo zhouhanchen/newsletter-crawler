@@ -46,3 +46,27 @@ class MonitorSite(Model):
     class Meta:
         table = 'monitor_site'
         table_description = '监控网站表'
+
+
+class TodoCleanData(Model):
+    id = fields.BigIntField(pk=True)
+    task_id = fields.BigIntField(null=True)
+    url = fields.CharField(max_length=1000, null=True, description='链接')
+    publish_time = fields.DatetimeField(null=True, description='发布时间')
+    website_info_id = fields.BigIntField(null=True, description='网站信息id')
+    region = fields.CharField(max_length=100, null=True, description='区域')
+    country = fields.CharField(max_length=100, null=True, description='国家/地区')
+    subject_type = fields.CharField(max_length=100, null=True, description='主体类型')
+    organization_type = fields.CharField(max_length=100, null=True, description='机构类型')
+    notification_agency = fields.CharField(max_length=100, null=True, description='通报机构')
+    article_category = fields.CharField(max_length=100, null=True, description='文章分类')
+    regional_scope = fields.CharField(max_length=100, null=True, description='地区范围')
+    identification_source = fields.CharField(max_length=100, null=True, description='标识来源')
+    lang = fields.CharField(max_length=20, null=True, description='网站语言')
+    create_time = fields.DatetimeField(null=True, description='创建时间')
+    update_time = fields.DatetimeField(null=True, description='更新时间')
+    status = fields.IntField(default=0, null=True, description='状态 0:未处理 1:已处理')
+
+    class Meta:
+        table = 'todo_clean_data'
+        table_description = '待清洗数据模型'
