@@ -5,6 +5,7 @@ from utils.fire_crawl_utils import scrape
 from loguru import logger as log
 import utils.ai_consumer_utils as ai_sdk
 import utils.redis_utils as redis
+from tortoise import Tortoise, run_async
 
 
 def todo_urls(source: int):
@@ -123,4 +124,13 @@ async def todo_clean_data(req):
 
         redis.set_value('un_todo_url', len(un_todo_url) - (i+1))
 
+    return None
+
+
+async def pull_today_data():
+    conn = Tortoise.get_connection('default')
+    sql = 'select count(*) from crawler_ai_news_detail where id = %s'
+    params = [1820401243093217282]
+    results = await conn.execute_query_dict(sql, params)
+    print(len(results))
     return None

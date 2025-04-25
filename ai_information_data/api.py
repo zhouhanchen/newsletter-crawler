@@ -77,3 +77,15 @@ async def todo_clean_data(req: dict):
     redis.del_value('todo_clean_data')
     return {"message": "success"}
 
+
+@api_aid.get("/pull_today_data")
+async def pull_today_data():
+    logger.info('开始拉取今天的数据')
+    v = redis.get_value('pull_today_data')
+    if v is not None:
+        logger.warning('当前有未完成的任务')
+        return {"message": "当前有未完成的任务"}
+    redis.set_value('pull_today_data', '1')
+    await service.pull_today_data()
+    redis.del_value('pull_today_data')
+    return {"message": "success"}
