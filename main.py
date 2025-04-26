@@ -23,7 +23,7 @@ register_tortoise(app, config=TORTOISE_ORM)
 @app.on_event("startup")
 async def startup_event():
     log.info("Starting up init job...")
-    # retry_job.init_job()
+    retry_job.init_job()
 
 if __name__ == '__main__':
     import uvicorn
