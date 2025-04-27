@@ -83,7 +83,7 @@ def tag_request():
     try:
         data = {
             "source": -1,
-            "limit": 10
+            "limit": 15
         }
         response = requests.post(saas_ai_url + '/ai/information/run_tag/', headers=saas_ai_headers, json=data)
         response.raise_for_status()
