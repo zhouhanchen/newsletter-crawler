@@ -60,6 +60,7 @@ def tag_job():
         log.error('tag_request重试失败，无法执行打标')
         return
 
+
 def count_request():
     try:
         # 发送 GET 请求
@@ -82,7 +83,7 @@ def tag_request():
     try:
         data = {
             "source": -1,
-            "limit": 500
+            "limit": 10
         }
         response = requests.post(saas_ai_url + '/ai/information/run_tag/', headers=saas_ai_headers, json=data)
         response.raise_for_status()
