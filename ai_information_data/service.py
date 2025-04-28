@@ -97,7 +97,7 @@ async def todo_clean_data(req):
     log.info('un_todo_url size is {}'.format(len(un_todo_url)))
     redis.set_value('un_todo_url', len(un_todo_url))
     for i, item in enumerate(un_todo_url):
-        log.info('un_todo_url: 当前进度{}/{}'.format(i+1, len(un_todo_url)))
+        log.info('un_todo_url: 当前进度{}/{}'.format(i + 1, len(un_todo_url)))
         ext = {
             'region': item.region,
             'countryOrAreas': item.country,
@@ -122,15 +122,36 @@ async def todo_clean_data(req):
         except Exception as e:
             log.warning('爬取失败: {}'.format(e))
 
-        redis.set_value('un_todo_url', len(un_todo_url) - (i+1))
+        redis.set_value('un_todo_url', len(un_todo_url) - (i + 1))
 
     return None
 
 
 async def pull_today_data():
     conn = Tortoise.get_connection('default')
-    sql = 'select count(*) from crawler_ai_news_detail where id = %s'
-    params = [1820401243093217282]
-    results = await conn.execute_query_dict(sql, params)
-    print(len(results))
+
+    insert_sql = ('insert ignore into todo_clean_data(id, task_id, title, url, publish_time, create_time, update_time) '
+                  'select id, task_id, title, url, publish_time, create_time, update_time from crawler_ai_news_detail')
+    insert_result = await conn.execute_script(insert_sql)
+    log.info('insert_result is {}'.format(insert_result))
+
+    update_sql_1 = ('update todo_clean_data t1 join crawler_ai_news_task_config t2 '
+                    'on t1.task_id = t2.id set t1.website_info_id = t2.website_info_id')
+    await conn.execute_script(update_sql_1)
+
+    update_sql_2 = ('update todo_clean_data t1 join crawler_website_info t2 '
+                    'on t1.website_info_id = t2.id '
+                    'set t1.region  = t2.region,'
+                    't1.country = t2.country,'
+                    't1.subject_type = t2.subject_type,'
+                    't1.organization_type = t2.organization_type,'
+                    't1.notification_agency = t2.notification_agency,'
+                    't1.article_category = t2.article_category,'
+                    't1.regional_scope = t2.regional_scope,'
+                    't1.identification_source = t2.identification_source,'
+                    't1.website_info_id = t2.id,'
+                    't1.lang_site = t2.language_locale,'
+                    't1.lang = t2.language')
+    await conn.execute_script(update_sql_2)
+
     return None

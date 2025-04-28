@@ -10,9 +10,9 @@ app = FastAPI()
 
 log.info("Starting FastAPI application...")
 
-log.info('flush db...')
-
-redis_utils.flush_db()
+# log.info('flush db...')
+#
+# redis_utils.flush_db()
 
 
 app.include_router(api_aid, prefix='/aid', tags=['information_data'])

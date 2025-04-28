@@ -80,10 +80,12 @@ def count_request():
 
 
 def tag_request():
+    source = int(redis.get_value('source')) if redis.get_value('source') is not None else -1
+    limit = int(redis.get_value('limit')) if redis.get_value('limit') is not None else 15
     try:
         data = {
-            "source": -1,
-            "limit": 15
+            "source": source,
+            "limit": limit
         }
         response = requests.post(saas_ai_url + '/ai/information/run_tag/', headers=saas_ai_headers, json=data)
         response.raise_for_status()
@@ -103,5 +105,5 @@ def init_job():
     scheduler = BackgroundScheduler()
     # 一小时执行一次job函数
     # scheduler.add_job(job, 'interval', seconds=3600)
-    scheduler.add_job(tag_job, 'interval', seconds=600)
+    scheduler.add_job(tag_job, 'interval', seconds=780)
     scheduler.start()
