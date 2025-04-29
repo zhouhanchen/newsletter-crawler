@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from ai_information_data.monitor_services import monitor_service
 import ai_information_data.service as service
 from utils import redis_utils as redis
+from job.craw_job import check_todo
 
 
 class TodoUrlReq(BaseModel):
@@ -89,3 +90,9 @@ async def pull_today_data():
     await service.pull_today_data()
     redis.del_value('pull_today_data')
     return {"message": "success"}
+
+
+@api_aid.get("/test")
+async def test_check_todo():
+    await check_todo()
+    return {"message": "Hello World"}

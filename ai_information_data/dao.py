@@ -1,6 +1,6 @@
 from utils.ai_consumer_utils import *
 from loguru import logger as log
-from db.models import TodoCleanData
+from db.models import TodoCleanData, TjPushLog
 from datetime import datetime
 
 
@@ -58,18 +58,28 @@ def save_scraped_data(data, url, deep: 0, source, pid, path, ext):
 
 
 async def get_un_todo_urls():
-    return await TodoCleanData.filter(status=0).order_by('-create_time')
+    # 大于重试次数 10的不再爬取
+    return await TodoCleanData.filter(status=0, retry_num__lte=10).order_by('-create_time')
 
 
 async def complete_un_todo_url(url_id):
     await TodoCleanData.filter(id=url_id).update(status=1)
 
 
-async def mark_exception_status(url_id):
-    await TodoCleanData.filter(id=url_id).update(status=2)
+async def mark_exception_status(url_id, retry_num):
+    await TodoCleanData.filter(id=url_id).update(retry_num=retry_num)
 
 
 async def get_filtered_data(year: int, month: int, day: int):
     start_date = datetime(year, month, day)
-    # 使用 Func 函数调用 DATE_FORMAT 函数
-    return await TodoCleanData.filter(create_time__gte=start_date, status=0)
+    return await TodoCleanData.filter(create_time__gte=start_date, status=0, retry_num__lte=10)
+
+
+async def today_has_data(year: int, month: int, day: int):
+    start_date = datetime(year, month, day)
+    return await TodoCleanData.filter(create_time__gte=start_date)
+
+
+async def get_today_push_log():
+    today = datetime.today().replace(hour=0, minute=0, second=0)
+    return await TjPushLog.filter(push_time=today).first()

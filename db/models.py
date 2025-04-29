@@ -69,7 +69,19 @@ class TodoCleanData(Model):
     create_time = fields.DatetimeField(null=True, description='创建时间')
     update_time = fields.DatetimeField(null=True, description='更新时间')
     status = fields.IntField(default=0, null=True, description='状态 0:未处理 1:已处理')
+    retry_num = fields.IntField(default=0, null=True, description='重试次数')
 
     class Meta:
         table = 'todo_clean_data'
         table_description = '待清洗数据模型'
+
+
+class TjPushLog(Model):
+    id = fields.BigIntField(pk=True)
+    status = fields.IntField(default=0, null=True, description='状态 0:失败 1:成功')
+    create_time = fields.DatetimeField(null=True, description='创建时间')
+    push_time = fields.DatetimeField(null=True, description='推送时间')
+
+    class Meta:
+        table = 'tj_push_log'
+        table_description = 'tj cos推送日志表'
