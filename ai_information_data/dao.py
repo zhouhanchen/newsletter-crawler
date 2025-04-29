@@ -1,6 +1,7 @@
 from utils.ai_consumer_utils import *
 from loguru import logger as log
 from db.models import TodoCleanData
+from datetime import datetime
 
 
 def get_todo_urls(source: int):
@@ -62,3 +63,13 @@ async def get_un_todo_urls():
 
 async def complete_un_todo_url(url_id):
     await TodoCleanData.filter(id=url_id).update(status=1)
+
+
+async def mark_exception_status(url_id):
+    await TodoCleanData.filter(id=url_id).update(status=2)
+
+
+async def get_filtered_data(year: int, month: int, day: int):
+    start_date = datetime(year, month, day)
+    # 使用 Func 函数调用 DATE_FORMAT 函数
+    return await TodoCleanData.filter(create_time__gte=start_date, status=0)

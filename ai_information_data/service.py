@@ -5,7 +5,8 @@ from utils.fire_crawl_utils import scrape
 from loguru import logger as log
 import utils.ai_consumer_utils as ai_sdk
 import utils.redis_utils as redis
-from tortoise import Tortoise, run_async
+from tortoise import Tortoise
+import datetime
 
 
 def todo_urls(source: int):
@@ -94,10 +95,15 @@ def job_retry():
 
 async def todo_clean_data(req):
     un_todo_url = await aid_dao.get_un_todo_urls()
-    log.info('un_todo_url size is {}'.format(len(un_todo_url)))
-    redis.set_value('un_todo_url', len(un_todo_url))
-    for i, item in enumerate(un_todo_url):
-        log.info('un_todo_url: 当前进度{}/{}'.format(i + 1, len(un_todo_url)))
+    # un_todo_url = await aid_dao.get_filtered_data(2025, 4, 23)
+    await fire_crawl_url(un_todo_url)
+
+
+async def fire_crawl_url(todo_url_list):
+    log.info('un_todo_url size is {}'.format(len(todo_url_list)))
+    redis.set_value('un_todo_url', len(todo_url_list))
+    for i, item in enumerate(todo_url_list):
+        log.info('un_todo_url: 当前进度{}/{}'.format(i + 1, len(todo_url_list)))
         ext = {
             'region': item.region,
             'countryOrAreas': item.country,
@@ -121,8 +127,9 @@ async def todo_clean_data(req):
             await aid_dao.complete_un_todo_url(item.id)
         except Exception as e:
             log.warning('爬取失败: {}'.format(e))
+            await aid_dao.mark_exception_status(item.id)
 
-        redis.set_value('un_todo_url', len(un_todo_url) - (i + 1))
+        redis.set_value('un_todo_url', len(todo_url_list) - (i + 1))
 
     return None
 
@@ -155,3 +162,16 @@ async def pull_today_data():
     await conn.execute_script(update_sql_2)
 
     return None
+
+
+async def execute_fire_crawl_job():
+    now = datetime.datetime.now()
+
+    # 获取年、月、日
+    year = now.year
+    month = now.month
+    day = now.day
+    # 执行未完成的
+    un_todo_url = await aid_dao.get_filtered_data(year, month, day)
+    await fire_crawl_url(un_todo_url)
+
