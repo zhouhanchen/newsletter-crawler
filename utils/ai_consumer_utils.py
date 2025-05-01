@@ -5,7 +5,7 @@ from ai_information_data.models import AiInformationDataReq
 from loguru import logger as log
 
 base_url = 'https://testai.ilaw.law/consumer-gateway/consumer-ai-server'
-token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzeXN0ZW1JZCI6IkNPTlNVTUVSX0FJIiwicGhvbmUiOiIxNTUyMzMxMjgzMSIsImV4cCI6MTc0NTk4MTUwOCwidXNlcklkIjoiMTg4OTUxMzg0NzUwOTcwMDYxMCJ9.GXswieujK6xtPfXxJ97WqOwCR5xksgHJNauh4PdLcWc'
+token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzeXN0ZW1JZCI6IkNPTlNVTUVSX0FJIiwicGhvbmUiOiIxNTUyMzMxMjgzMSIsImV4cCI6MTc0NjY5NjQ3NywidXNlcklkIjoiMTg4OTUxMzg0NzUwOTcwMDYxMCJ9.M1Ws4GdaXQ13SBiTqaqV4_Cv1YGRtR0RR3e9u0iHf5M'
 
 
 def get_data(response, api):

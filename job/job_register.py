@@ -12,11 +12,14 @@ async def run_async_job(func):
 
 
 def scheduler_wrapper(func):
-    loop = asyncio.get_event_loop()
-    if loop.is_running():
-        loop.create_task(run_async_job(func))
-    else:
+    # 创建新的事件循环
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
         loop.run_until_complete(run_async_job(func))
+    finally:
+        # 关闭事件循环
+        loop.close()
 
 
 def init_job():
@@ -26,8 +29,8 @@ def init_job():
     scheduler.add_job(retry_failed_job, 'interval', seconds=3600)
     log.info('register tag_job, interval is 780 seconds')
     scheduler.add_job(tag_job, 'interval', seconds=780)
-    log.info('register retry_failed_job, interval is 1 hours')
+    log.info('register check_todo, interval is 1 hours')
     scheduler.add_job(lambda: scheduler_wrapper(check_todo), 'interval', seconds=3600)
-    log.info('register retry_failed_job, interval is 1 hours')
+    log.info('register sync_data_job, interval is 10 minutes')
     scheduler.add_job(lambda: scheduler_wrapper(sync_data_job), 'interval', seconds=600)
     scheduler.start()
