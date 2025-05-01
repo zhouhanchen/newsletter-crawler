@@ -37,6 +37,7 @@ async def check_todo():
 
     if push_log is not None and push_log.status == 1:
         log.info('今日已成功推送，不再进行推送')
+        redis.del_value('check_todo')
         return
 
     data = {
@@ -48,12 +49,14 @@ async def check_todo():
     result_json = response.json()
     if result_json is None or result_json['code'] != 0:
         log.warning(f'请求失败，返回结果: {result_json}')
+        redis.del_value('check_todo')
         return
     log.info('response is {}'.format(result_json))
     num = int(result_json['data'])
 
     if num > 0:
         log.info('今日数据打标未完成，num is {}'.format(num))
+        redis.del_value('check_todo')
         return
 
     log.info('开始推送 cos')
