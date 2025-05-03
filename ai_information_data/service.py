@@ -143,10 +143,13 @@ async def fire_crawl_url(todo_url_list):
 async def pull_today_data():
     conn = Tortoise.get_connection('default')
 
+    log.info('execute insert_sql')
     await conn.execute_script(insert_sql)
 
+    log.info('execute update_sql_1')
     await conn.execute_script(update_sql_1)
 
+    log.info('execute update_sql_2')
     await conn.execute_script(update_sql_2)
 
     return None
