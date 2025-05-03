@@ -95,5 +95,4 @@ async def pull_today_data():
 @api_aid.get("/test_check_todo")
 async def test_check_todo():
     await service.check_todo()
-    await check_todo()
     return {"message": "Hello World"}
