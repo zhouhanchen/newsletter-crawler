@@ -7,3 +7,5 @@ saas_ai_headers = {
     'lawyer-token': 'ZU4weWpzU1huV0NnekxiekZrQmU4OUpJOWNCbmwvU0xaR3NB',
     'Content-Type': 'application/json'
 }
+
+hongkong_newsletter_host = 'http://47.79.23.160:3001'
