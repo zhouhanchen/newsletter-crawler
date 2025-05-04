@@ -1,5 +1,5 @@
-insert_sql = ('insert ignore into todo_clean_data(id, task_id, title, url, publish_time, create_time, update_time) '
-              'select id, task_id, title, url, publish_time, create_time, update_time from crawler_ai_news_detail')
+insert_sql = ('insert ignore into todo_clean_data(id, task_id, title, url, publish_time, create_time, update_time, attachment) '
+              'select id, task_id, title, url, publish_time, create_time, update_time, attachment from crawler_ai_news_detail')
 
 update_sql_1 = ('update todo_clean_data t1 join crawler_ai_news_task_config t2 '
                 'on t1.task_id = t2.id set t1.website_info_id = t2.website_info_id')
