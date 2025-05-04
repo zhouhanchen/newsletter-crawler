@@ -1,6 +1,8 @@
 from loguru import logger as log
 from utils import redis_utils as redis
-from ai_information_data.service import job_retry
+import requests
+from constants import hongkong_newsletter_host
+import json
 
 
 def retry_failed_job():
@@ -10,7 +12,27 @@ def retry_failed_job():
         return
     redis.set_value('retry:jobs', '1')
     log.info('开始执行job')
-    job_retry()
+
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    data = {
+        "deep": 0,
+        "source": -1
+    }
+
+    try:
+        response = requests.post(f'{hongkong_newsletter_host}/aid/retry', headers=headers, data=json.dumps(data))
+        response.raise_for_status()
+        if response.status_code == 200:
+            log.info('✅job执行成功')
+        else:
+            log.warning(f'❌请求失败，返回状态码: {response.status_code}')
+    except requests.exceptions.HTTPError as http_err:
+        log.warning(f'❌HTTP error occurred: {http_err}')
+    except requests.exceptions.RequestException as req_err:
+        log.warning(f'❌Request error occurred: {req_err}')
+
     log.info('job执行完成')
     redis.del_value('retry:jobs')
 

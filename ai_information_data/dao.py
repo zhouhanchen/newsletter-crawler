@@ -83,3 +83,7 @@ async def today_has_data(year: int, month: int, day: int):
 async def get_today_push_log():
     today = datetime.today().replace(hour=0, minute=0, second=0)
     return await TjPushLog.filter(push_time=today).first()
+
+
+async def get_todo_url_by_urls(urls: list):
+    return await TodoCleanData.filter(url__in=urls)

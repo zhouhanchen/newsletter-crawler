@@ -39,27 +39,35 @@ def todo_urls(source: int):
                                       None, None, item['ext'])
 
 
-def retry(deep: int, source: int):
+async def retry(deep: int, source: int):
     failed_data = aid_dao.get_failed_urls(deep, source)
     log.info('failed_urls size is {}'.format(len(failed_data)))
 
-    ext = None
-    for item in aid_dao.get_monitor_site():
-        if item['id'] == source:
-            ext = item['ext']
-            break
+    source_url_list = []
+    for item in failed_data:
+        source_url_list.append(item['sourceUrl'])
 
-    for i, item in enumerate(failed_data):
-        log.info('failed_url: {}/{}'.format(i, len(failed_data)))
-        try:
-            scrape_resp = scrape(item['sourceUrl'])
-            aid_dao.save_scraped_data(scrape_resp, item['sourceUrl'], item['deep'], item['source'], item['pid'],
-                                      item['path'], ext)
-        except Exception as e:
-            log.warning('爬取失败: {}'.format(e))
-            aid_dao.save_scraped_data({}, item['sourceUrl'], int(item['deep']), item['source'],
-                                      item['id'], item['path'], ext)
+    todo_list = await aid_dao.get_todo_url_by_urls(source_url_list)
+    log.info('todo_list size is {}', len(todo_list))
+    if todo_list is not None and len(todo_list) > 0:
+        await fire_crawl_url(todo_list)
 
+    # ext = None
+    # for item in aid_dao.get_monitor_site():
+    #     if item['id'] == source:
+    #         ext = item['ext']
+    #         break
+
+    # for i, item in enumerate(failed_data):
+    #     log.info('failed_url: {}/{}'.format(i, len(failed_data)))
+    #     try:
+    #         scrape_resp = scrape(item['sourceUrl'])
+    #         aid_dao.save_scraped_data(scrape_resp, item['sourceUrl'], item['deep'], item['source'], item['pid'],
+    #                                   item['path'], ext)
+    #     except Exception as e:
+    #         log.warning('爬取失败: {}'.format(e))
+    #         aid_dao.save_scraped_data({}, item['sourceUrl'], int(item['deep']), item['source'],
+    #                                   item['id'], item['path'], ext)
     log.info('finish retry')
 
 
@@ -93,10 +101,10 @@ def deep(req):
     log.info('finish deep')
 
 
-def job_retry():
+async def job_retry():
     # sites = aid_dao.get_monitor_site()
     # for one_site in sites:
-    retry(0, -1)
+    await retry(0, -1)
 
 
 async def todo_clean_data(req):

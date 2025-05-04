@@ -9,8 +9,8 @@ from job.sync_data_job import sync_data_job
 def init_job():
     scheduler = BackgroundScheduler()
     # 一小时执行一次job函数
-    # log.info('register retry_failed_job interval is 3600 seconds')
-    # scheduler.add_job(retry_failed_job, 'interval', seconds=3600)
+    log.info('register retry_failed_job interval is 3600 seconds')
+    scheduler.add_job(retry_failed_job, 'interval', seconds=3600)
     log.info('register tag_job, interval is 13 minutes')
     scheduler.add_job(tag_job, 'interval', seconds=780)
     log.info('register check_todo, interval is 1 hours')
