@@ -92,9 +92,12 @@ async def pull_today_data():
     return {"message": "success"}
 
 
-@api_aid.get("/test_check_todo")
-async def test_check_todo():
-    await service.check_todo()
+@api_aid.post("/test_check_todo")
+async def test_check_todo(req: dict):
+    year = req.get('year')
+    month = req.get('month')
+    day = req.get('day')
+    await service.check_todo(int(year), int(month), int(day))
     return {"message": "Hello World"}
 
 
