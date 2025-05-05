@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from ai_information_data.monitor_services import monitor_service
 import ai_information_data.service as service
 from utils import redis_utils as redis
-from job.craw_job import check_todo
+from tortoise import Tortoise
 
 
 class TodoUrlReq(BaseModel):
@@ -96,3 +96,18 @@ async def pull_today_data():
 async def test_check_todo():
     await service.check_todo()
     return {"message": "Hello World"}
+
+
+@api_aid.post("/get")
+async def get(req: dict):
+    url = req.get('url')
+    conn = Tortoise.get_connection('default')
+    query = "SELECT content FROM crawler_ai_news_detail WHERE url = %s LIMIT 1"
+    result = await conn.execute_query_dict(query, [url])
+
+    if result:
+        return result[0]['content']
+    else:
+        return None
+
+

@@ -140,7 +140,7 @@ async def fire_crawl_url(todo_url_list):
             aid_dao.save_scraped_data(scrape_resp, item.url, 0, -1, None, None, json.dumps(ext, ensure_ascii=False))
             await aid_dao.complete_un_todo_url(item.id)
         except Exception as e:
-            log.warning('爬取失败: {}'.format(e))
+            log.warning('爬取失败: {}, url {}'.format(e, item.url))
             await aid_dao.mark_exception_status(item.id, item.retry_num + 1)
 
         redis.set_value('un_todo_url', len(todo_url_list) - (i + 1))
