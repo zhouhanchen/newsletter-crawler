@@ -186,10 +186,10 @@ async def check_todo(year: int, month: int, day: int):
     # year = now.year
     # month = now.month
     # day = now.day
-    today_data = await aid_dao.today_has_data(year, month, day)
-    if today_data is None or len(today_data) == 0:
-        log.info(f'{year}{month}{day}没有数据')
-        return
+    # today_data = await aid_dao.today_has_data(year, month, day)
+    # if today_data is None or len(today_data) == 0:
+    #     log.info(f'{year}{month}{day}没有数据')
+    #     return
     undo_list = await aid_dao.get_filtered_data(year, month, day)
     # undo_num = len(undo_list)
     # log.info('check_todo_and_push undo num is {}'.format(undo_num))

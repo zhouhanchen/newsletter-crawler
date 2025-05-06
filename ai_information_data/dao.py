@@ -71,8 +71,8 @@ async def mark_exception_status(url_id, retry_num):
 
 
 async def get_filtered_data(year: int, month: int, day: int):
-    start_date = datetime(year, month, day)
-    return await TodoCleanData.filter(create_time__gte=start_date, status=0, retry_num__lte=10)
+    # start_date = datetime(year, month, day)
+    return await TodoCleanData.filter(status=0, retry_num__lte=10)
 
 
 async def today_has_data(year: int, month: int, day: int):
