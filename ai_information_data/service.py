@@ -187,8 +187,8 @@ async def check_todo(year: int, month: int, day: int):
         log.info(f'{year}{month}{day}没有数据')
         return
     undo_list = await aid_dao.get_filtered_data(year, month, day)
-    undo_num = len(undo_list)
-    log.info('check_todo_and_push undo num is {}'.format(undo_num))
+    # undo_num = len(undo_list)
+    # log.info('check_todo_and_push undo num is {}'.format(undo_num))
 
     check_todo_redis = redis.get_value('check_todo')
     if check_todo_redis is not None:
