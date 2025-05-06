@@ -3,6 +3,7 @@ from utils import redis_utils as redis
 import requests
 from constants import hongkong_newsletter_host
 import json
+from utils.date_util import get_now
 
 
 def retry_failed_job():
@@ -18,7 +19,8 @@ def retry_failed_job():
     }
     data = {
         "deep": 0,
-        "source": -1
+        "source": -1,
+        "geCreateDate": get_now().strftime('%Y-%m-%d')
     }
 
     try:
@@ -35,9 +37,6 @@ def retry_failed_job():
 
     log.info('job执行完成')
     redis.del_value('retry:jobs')
-
-
-
 
 
 

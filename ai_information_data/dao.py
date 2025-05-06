@@ -12,8 +12,8 @@ def update_status(data_id):
     complete(data_id)
 
 
-def get_failed_urls(deep: int, source: int):
-    return failed_urls(deep, source)
+def get_failed_urls(deep: int, source: int, ge_create_date: str):
+    return failed_urls(deep, source, ge_create_date)
 
 
 def get_monitor_site():

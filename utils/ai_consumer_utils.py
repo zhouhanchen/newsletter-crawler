@@ -51,9 +51,9 @@ def complete(data_id):
     return post_request(api, {})
 
 
-def failed_urls(deep: int, source: int):
+def failed_urls(deep: int, source: int, ge_create_date: str):
     api = '/api/v1/crawl/data/get'
-    return post_request(api, {'deep': deep, 'source': source, 'failed': True})
+    return post_request(api, {'deep': deep, 'source': source, 'failed': True, 'geCreateDate': ge_create_date})
 
 
 def monitor_site_list():

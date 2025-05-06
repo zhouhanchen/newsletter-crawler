@@ -16,3 +16,4 @@ pydantic~=2.11.2
 redis~=5.2.1
 python-redis~=0.4.0
 APScheduler~=3.11.0
+pytz~=2025.2

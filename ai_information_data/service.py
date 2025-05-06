@@ -39,9 +39,13 @@ def todo_urls(source: int):
                                       None, None, item['ext'])
 
 
-async def retry(deep: int, source: int):
-    failed_data = aid_dao.get_failed_urls(deep, source)
+async def retry(deep: int, source: int, ge_create_date: str):
+    failed_data = aid_dao.get_failed_urls(deep, source, ge_create_date)
     log.info('failed_urls size is {}'.format(len(failed_data)))
+
+    if len(failed_data) == 0:
+        log.info('没有失败的url')
+        return None
 
     source_url_list = []
     for item in failed_data:

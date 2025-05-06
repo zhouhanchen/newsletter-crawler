@@ -48,7 +48,7 @@ async def retry(req: dict):
         return {"message": "当前有未完成的任务"}
     redis.set_value('retry', '1')
     logger.info('req is: {}'.format(req))
-    await service.retry(req['deep'], req['source'])
+    await service.retry(req['deep'], req['source'], req['geCreateDate'])
     redis.del_value('retry')
     return {"message": "success"}
 
