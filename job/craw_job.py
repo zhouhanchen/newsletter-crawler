@@ -1,7 +1,7 @@
 import requests
 from loguru import logger as log
-from constants import hongkong_newsletter_host
-from datetime import datetime, timedelta
+from constants import hongkong_newsletter_host, token_value, header_token
+from datetime import datetime
 import json
 
 
@@ -33,7 +33,10 @@ def check_todo():
         "month": month,
         "day": day
     }
-    resp = requests.post(url=f'{hongkong_newsletter_host}/aid/test_check_todo', data=json.dumps(data))
+    headers = {
+        header_token: token_value
+    }
+    resp = requests.post(url=f'{hongkong_newsletter_host}/aid/test_check_todo', data=json.dumps(data), headers=headers)
     if resp.status_code != 200:
         log.warning('❌请求失败，返回状态码: {}'.format(resp.status_code))
     log.info('✅check_todo job executed successfully')

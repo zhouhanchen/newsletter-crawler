@@ -9,3 +9,6 @@ saas_ai_headers = {
 }
 
 hongkong_newsletter_host = 'http://47.79.23.160:3001'
+
+header_token = 'token'
+token_value = 'newsletter_crawler_iLaw'

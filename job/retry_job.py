@@ -1,7 +1,7 @@
 from loguru import logger as log
 from utils import redis_utils as redis
 import requests
-from constants import hongkong_newsletter_host
+from constants import hongkong_newsletter_host, token_value, header_token
 import json
 from utils.date_util import get_now
 
@@ -15,7 +15,8 @@ def retry_failed_job():
     log.info('开始执行job')
 
     headers = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        header_token: token_value
     }
     data = {
         "deep": 0,

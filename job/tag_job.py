@@ -37,6 +37,7 @@ def tag_job():
     if not tag:
         log.error('tag_request重试失败，无法执行打标')
         return
+    log.info('打标执行完成✅')
 
 
 def count_request():
