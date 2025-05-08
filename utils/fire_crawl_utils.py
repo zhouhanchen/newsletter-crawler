@@ -10,7 +10,8 @@ def scrape(url: str, formats=None):
 
     body_data = {
         'url': url,
-        'formats': formats
+        'formats': formats,
+        'timeout': 360000
     }
 
     resp = requests.post(base_url + '/v1/scrape', headers={
