@@ -3,6 +3,7 @@ import time
 from utils import redis_utils as redis
 from loguru import logger as log
 from constants import saas_ai_url, saas_ai_headers
+from utils.ai_consumer_utils import run_tag
 
 
 def tag_job():
@@ -66,12 +67,7 @@ def tag_request():
             "source": source,
             "limit": limit
         }
-        response = requests.post(saas_ai_url + '/ai/information/run_tag/', headers=saas_ai_headers, json=data)
-        response.raise_for_status()
-        result_json = response.json()
-        if result_json is None or result_json['code'] != 0:
-            log.warning(f'请求失败，返回结果: {result_json}')
-            return False
+        run_tag(data)
         return True
     except requests.exceptions.HTTPError as http_err:
         log.warning(f"HTTP 错误发生: {http_err}")

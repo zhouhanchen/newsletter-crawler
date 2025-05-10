@@ -90,3 +90,8 @@ def update_site_db(db_id, latest_url):
 def deep_urls(data: dict):
     api = '/api/v1/crawl/data/deep'
     return post_request(api, data)
+
+def run_tag(data: dict):
+    api = '/api/v1/crawl/data/runTag'
+    return post_request(api, data)
+
