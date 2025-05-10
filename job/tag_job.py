@@ -33,15 +33,18 @@ def tag_job():
 
     log.info('打标可能停止，开始执行job')
     tag_req_retry_count = 0
-    tag = tag_request()
-    while not tag and tag_req_retry_count < 10:
-        log.warning(f'tag_request失败，重试次数: {tag_req_retry_count}')
-        time.sleep(1)
+    try:
         tag = tag_request()
-        tag_req_retry_count += 1
-    if not tag:
-        log.error('tag_request重试失败，无法执行打标')
-        return
+        while not tag and tag_req_retry_count < 10:
+            log.warning(f'tag_request失败，重试次数: {tag_req_retry_count}')
+            time.sleep(1)
+            tag = tag_request()
+            tag_req_retry_count += 1
+        if not tag:
+            log.error('tag_request重试失败，无法执行打标')
+            return
+    except Exception as e:
+        log.error(f'打标请求失败: {e}')
     log.info('打标执行完成✅')
 
 

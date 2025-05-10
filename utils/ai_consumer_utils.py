@@ -8,11 +8,13 @@ base_url = 'https://testai.ilaw.law/consumer-gateway/consumer-ai-server'
 token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzeXN0ZW1JZCI6IkNPTlNVTUVSX0FJIiwicGhvbmUiOiIxNTUyMzMxMjgzMSIsImV4cCI6MTc0NjY5NjQ3NywidXNlcklkIjoiMTg4OTUxMzg0NzUwOTcwMDYxMCJ9.M1Ws4GdaXQ13SBiTqaqV4_Cv1YGRtR0RR3e9u0iHf5M'
 
 
-def get_data(response, api):
+def get_data(response, api, print_result: bool = True):
     if response.status_code == 200:
         if response.json()['code'] == 0:
             result_data = response.json()['data']
-            log.success(f'{api} is request success, and data is {result_data}')
+            log.success(f'{api} is request success')
+            if print_result:
+                log.success(f'and result is {response.json()}')
             return result_data
         else:
             log.error(f'failed, error: {response.json()}')
@@ -21,14 +23,14 @@ def get_data(response, api):
     return None
 
 
-def post_request(api: str, data: dict):
-    log.info('post request: {}, and param is {}'.format(data, data))
+def post_request(api: str, data: dict, print_result: bool = True):
+    log.info('post request: {}, and param is {}'.format(api, data))
     resp = requests.post(base_url + api, headers={
         'content-type': 'application/json',
         'token': token
     }, data=json.dumps(data, ensure_ascii=False))
 
-    return get_data(resp, api)
+    return get_data(resp, api, print_result)
 
 
 def get_request(api: str, data: dict):
@@ -59,7 +61,7 @@ def failed_urls(deep: int, source: int, ge_create_date: str):
 
 def count_tag_num():
     api = '/api/v1/crawl/data/get'
-    return post_request(api, {'tagStatus': 1})
+    return post_request(api, {'tagStatus': 1}, False)
 
 def monitor_site_list():
     api = '/api/v1/monitorSite/list'
