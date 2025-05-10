@@ -11,8 +11,9 @@ token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzeXN0ZW1JZCI6IkNPTlNVTUVSX0FJIi
 def get_data(response, api):
     if response.status_code == 200:
         if response.json()['code'] == 0:
-            log.success(f'{api} is request success')
-            return response.json()['data']
+            result_data = response.json()['data']
+            log.success(f'{api} is request success, and data is {result_data}')
+            return result_data
         else:
             log.error(f'failed, error: {response.json()}')
     else:
@@ -21,6 +22,7 @@ def get_data(response, api):
 
 
 def post_request(api: str, data: dict):
+    log.info('post request: {}, and param is {}'.format(data, data))
     resp = requests.post(base_url + api, headers={
         'content-type': 'application/json',
         'token': token
@@ -55,6 +57,9 @@ def failed_urls(deep: int, source: int, ge_create_date: str):
     api = '/api/v1/crawl/data/get'
     return post_request(api, {'deep': deep, 'source': source, 'failed': True, 'geCreateDate': ge_create_date})
 
+def count_tag_num():
+    api = '/api/v1/crawl/data/get'
+    return post_request(api, {'tagStatus': 1})
 
 def monitor_site_list():
     api = '/api/v1/monitorSite/list'
@@ -95,3 +100,6 @@ def run_tag(data: dict):
     api = '/api/v1/crawl/data/runTag'
     return post_request(api, data)
 
+def push_tj_cos(data: dict):
+    api = '/api/v1/crawl/data/pushTj'
+    return post_request(api, data)

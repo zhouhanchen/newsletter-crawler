@@ -1,9 +1,9 @@
-import requests
 import time
-from utils import redis_utils as redis
+
 from loguru import logger as log
-from constants import saas_ai_url, saas_ai_headers
-from utils.ai_consumer_utils import run_tag
+
+from utils import redis_utils as redis
+from utils.ai_consumer_utils import run_tag, count_tag_num
 
 
 def tag_job():
@@ -42,35 +42,16 @@ def tag_job():
 
 
 def count_request():
-    try:
-        # 发送 GET 请求
-        response = requests.get(saas_ai_url + '/ai/information/count_tag_num/', headers=saas_ai_headers)
-        # 检查响应状态码，如果不是 200 则抛出异常
-        response.raise_for_status()
-        result_json = response.json()
-        if result_json is None or result_json['code'] != 0:
-            log.warning(f'请求失败，返回结果: {result_json}')
-            return None
-        return result_json['data']
-    except requests.exceptions.HTTPError as http_err:
-        log.warning(f'HTTP 错误发生: {http_err}')
-    except requests.exceptions.RequestException as req_err:
-        log.warning(f'请求错误发生: {req_err}')
-    return None
+    result = count_tag_num()
+    return len(result)
 
 
 def tag_request():
     source = int(redis.get_value('source')) if redis.get_value('source') is not None else -1
     limit = int(redis.get_value('limit')) if redis.get_value('limit') is not None else 15
-    try:
-        data = {
-            "source": source,
-            "limit": limit
-        }
-        run_tag(data)
-        return True
-    except requests.exceptions.HTTPError as http_err:
-        log.warning(f"HTTP 错误发生: {http_err}")
-    except requests.exceptions.RequestException as req_err:
-        log.warning(f"请求错误发生: {req_err}")
-    return True
+    data = {
+        "source": source,
+        "limit": limit
+    }
+    # log.info('tag_request data is: {}'.format(data))
+    return run_tag(data) is not None
