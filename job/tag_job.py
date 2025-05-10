@@ -3,12 +3,16 @@ import time
 from loguru import logger as log
 
 from utils import redis_utils as redis
-from utils.ai_consumer_utils import run_tag, count_tag_num
+from utils.ai_consumer_utils import run_tag, count_tag_num, update_failed_data
+from utils.date_util import get_now
 
 
 def tag_job():
     old_num = redis.get_value('tag_num')
     log.info('old_num is: {}'.format(old_num))
+
+    log.info('update_failed_data...')
+    update_failed_data({'createDate': get_now().strftime('%Y-%m-%d')})
 
     log.info('开始执行count')
     count_req_retry_count = 0
@@ -53,5 +57,4 @@ def tag_request():
         "source": source,
         "limit": limit
     }
-    # log.info('tag_request data is: {}'.format(data))
     return run_tag(data) is not None

@@ -8,8 +8,6 @@ import utils.redis_utils as redis
 from tortoise import Tortoise
 import datetime
 from sql.todo_data_sql import insert_sql, update_sql_1, update_sql_2
-import requests
-from constants import saas_ai_url, saas_ai_headers
 
 
 def todo_urls(source: int):
@@ -34,6 +32,7 @@ def todo_urls(source: int):
             log.warning('爬取失败: {}'.format(e))
             aid_dao.save_scraped_data({}, item['url'], 0, source,
                                       None, None, item['ext'])
+    return True
 
 
 async def retry(deep: int, source: int, ge_create_date: str):
@@ -52,7 +51,8 @@ async def retry(deep: int, source: int, ge_create_date: str):
     log.info('todo_list size is {}', len(todo_list))
     if todo_list is not None and len(todo_list) > 0:
         await fire_crawl_url(todo_list)
-
+    log.info('finish retry')
+    return True
     # ext = None
     # for item in aid_dao.get_monitor_site():
     #     if item['id'] == source:
@@ -69,7 +69,6 @@ async def retry(deep: int, source: int, ge_create_date: str):
     #         log.warning('爬取失败: {}'.format(e))
     #         aid_dao.save_scraped_data({}, item['sourceUrl'], int(item['deep']), item['source'],
     #                                   item['id'], item['path'], ext)
-    log.info('finish retry')
 
 
 def deep(req):

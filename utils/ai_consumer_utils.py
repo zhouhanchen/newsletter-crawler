@@ -103,3 +103,7 @@ def run_tag(data: dict):
 def push_tj_cos(data: dict):
     api = '/api/v1/crawl/data/pushTj'
     return post_request(api, data)
+
+def update_failed_data(data: dict):
+    api = '/api/v1/crawl/data/updateFailData'
+    return post_request(api, data)
