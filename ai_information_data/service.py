@@ -137,7 +137,8 @@ async def fire_crawl_url(todo_url_list):
             scrape_resp['tempTitle'] = item.title
             scrape_resp['tempLang'] = item.lang_site
             scrape_resp['data']['metadata']['sourceURL'] = item.url
-            aid_dao.save_scraped_data(scrape_resp, item.url, 0, -1, None, None, json.dumps(ext, ensure_ascii=False))
+            aid_dao.save_scraped_data(scrape_resp, item.url, 0, -1, None, None,
+                                      json.dumps(ext, ensure_ascii=False), True)
             await aid_dao.complete_un_todo_url(item.id)
         except Exception as e:
             log.warning('爬取失败: {}, url {}'.format(e, item.url))

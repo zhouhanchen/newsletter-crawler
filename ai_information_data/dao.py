@@ -24,7 +24,7 @@ def update_site(db_id, latest_url):
     return update_site_db(db_id, latest_url)
 
 
-def save_scraped_data(data, url, deep: 0, source, pid, path, ext):
+def save_scraped_data(data, url, deep: 0, source, pid, path, ext, force_title=False):
     req = AiInformationDataReq()
     req.deep = deep
     req.source = source
@@ -37,7 +37,7 @@ def save_scraped_data(data, url, deep: 0, source, pid, path, ext):
         if ext is not None:
             metadata.update(json.loads(ext))
         req.metadata = json.dumps(metadata, ensure_ascii=False)
-        req.title = metadata.get('title', data.get('tempTitle', None))
+        req.title = data.get('tempTitle', None) if force_title else metadata.get('title', data.get('tempTitle', None))
         req.sourceUrl = metadata.get('sourceURL')
         req.lang = metadata.get('language', data.get('tempLang', None))
         req.markdown = temp_data['markdown']
