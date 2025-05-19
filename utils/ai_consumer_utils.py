@@ -26,9 +26,9 @@ def get_data(response, api, print_result: bool = True):
 def post_request(api: str, data: dict, print_result: bool = True):
     log.info('post request: {}, and param is {}'.format(api, data))
     resp = requests.post(base_url + api, headers={
-        'content-type': 'application/json',
+        'content-type': 'application/json; charset=utf-8',
         'token': token
-    }, data=json.dumps(data, ensure_ascii=False))
+    }, data=json.dumps(data, ensure_ascii=False).encode('utf-8'))
 
     return get_data(resp, api, print_result)
 
