@@ -8,13 +8,13 @@ from utils.date_util import get_now
 
 
 def tag_job():
-    old_num = redis.get_value('tag_num')
-    log.info('old_num is: {}'.format(old_num))
+    # old_num = redis.get_value('tag_num')
+    # log.info('old_num is: {}'.format(old_num))
 
-    log.info('update_failed_data...')
-    update_failed_data({'createDate': get_now().strftime('%Y-%m-%d')})
+    # log.info('update_failed_data...')
+    # update_failed_data({'createDate': get_now().strftime('%Y-%m-%d')})
 
-    log.info('开始执行count')
+    # log.info('开始执行count')
     count_req_retry_count = 0
     count = count_request()
     while count is None and count_req_retry_count < 10:
@@ -26,12 +26,12 @@ def tag_job():
         log.error('count_request重试失败，无法获取标签数量')
         return
     log.info('count is {}'.format(count))
-    redis.set_value('tag_num', count)
-    if old_num is not None and int(old_num) != int(count):
-        log.info('打标进行中，不进行重试')
-        return
+    # redis.set_value('tag_num', count)
+    # if old_num is not None and int(old_num) != int(count):
+    #     log.info('打标进行中，不进行重试')
+    #     return
 
-    log.info('打标可能停止，开始执行job')
+    log.info('开始执行打标job')
     tag_req_retry_count = 0
     try:
         tag = tag_request()

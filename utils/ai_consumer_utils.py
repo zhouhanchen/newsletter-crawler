@@ -98,13 +98,16 @@ def deep_urls(data: dict):
     api = '/api/v1/crawl/data/deep'
     return post_request(api, data)
 
+
 def run_tag(data: dict):
     api = '/api/v1/crawl/data/runTag'
     return post_request(api, data)
 
+
 def push_tj_cos(data: dict):
     api = '/api/v1/crawl/data/pushTj'
     return post_request(api, data)
+
 
 def update_failed_data(data: dict):
     api = '/api/v1/crawl/data/updateFailData'
