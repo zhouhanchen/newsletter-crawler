@@ -2,6 +2,7 @@ import json
 
 import ai_information_data.dao as aid_dao
 from utils.fire_crawl_utils import scrape
+from urllib.parse import urlparse
 from loguru import logger as log
 import utils.ai_consumer_utils as ai_sdk
 import utils.redis_utils as redis
@@ -131,7 +132,13 @@ async def fire_crawl_url(todo_url_list):
         }
         try:
             todo_url = item.url if item.attachment is None else item.attachment
-            scrape_resp = scrape(todo_url)
+            # 提取 domain
+            parsed_url = urlparse(todo_url)
+            # 获取域名（包括子域名）
+            domain = parsed_url.netloc
+            # 根据 domain 获取 fire_crawl 配置
+            config = await aid_dao.get_fire_crawl_config(domain)
+            scrape_resp = scrape(todo_url, config_params=config)
             if item.publish_time is not None:
                 scrape_resp['publishTime'] = item.publish_time.strftime('%Y-%m-%d %H:%M:%S')
             scrape_resp['tempTitle'] = item.title

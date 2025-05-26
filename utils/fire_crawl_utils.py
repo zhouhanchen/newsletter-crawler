@@ -4,7 +4,7 @@ import json
 base_url = 'http://47.79.23.160:3002'
 
 
-def scrape(url: str, formats=None):
+def scrape(url: str, formats=None, config_params: dict = None):
     if formats is None:
         formats = ['markdown']
 
@@ -13,6 +13,9 @@ def scrape(url: str, formats=None):
         'formats': formats,
         'timeout': 360000
     }
+
+    if config_params:
+        body_data.update(config_params)
 
     resp = requests.post(base_url + '/v1/scrape', headers={
         'content-type': 'application/json',

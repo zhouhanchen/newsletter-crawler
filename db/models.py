@@ -85,3 +85,17 @@ class TjPushLog(Model):
     class Meta:
         table = 'tj_push_log'
         table_description = 'tj cos推送日志表'
+
+
+class FireCrawlConfig(Model):
+    id = fields.IntField(pk=True, description='主键id')
+    task_id = fields.BigIntField(null=True)
+    domain = fields.CharField(max_length=255, description='域名')
+    config = fields.JSONField(description='爬虫配置')
+    is_delete = fields.BooleanField(default=False, description='是否删除, 0-未删除，1-已删除')
+    create_time = fields.DatetimeField(auto_now_add=True, description='创建时间')
+
+    class Meta:
+        table = 'fire_crawl_config'
+        table_description = 'fire_crawl配置表'
+

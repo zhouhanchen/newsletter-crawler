@@ -1,6 +1,6 @@
 from utils.ai_consumer_utils import *
 from loguru import logger as log
-from db.models import TodoCleanData, TjPushLog
+from db.models import TodoCleanData, TjPushLog, FireCrawlConfig
 from datetime import datetime
 
 
@@ -87,3 +87,11 @@ async def get_today_push_log():
 
 async def get_todo_url_by_urls(urls: list):
     return await TodoCleanData.filter(url__in=urls)
+
+
+async def get_fire_crawl_config(domain: str):
+    # 查询未删除且域名匹配的配置
+    return await FireCrawlConfig.filter(
+        domain=domain,
+        is_delete=False  # 对应SQL中的is_delete=0
+    ).first().values_list('config', flat=True)  # 只返回config字段
