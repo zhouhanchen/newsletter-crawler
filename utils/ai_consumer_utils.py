@@ -12,9 +12,10 @@ def get_data(response, api, print_result: bool = True):
     if response.status_code == 200:
         if response.json()['code'] == 0:
             result_data = response.json()['data']
-            log.success(f'{api} is request success')
             if print_result:
-                log.success(f'and result is {response.json()}')
+                log.success(f'{api} is request success and result is {response.json()}')
+            else:
+                log.success(f'{api} is request success')
             return result_data
         else:
             log.error(f'failed, error: {response.json()}')
