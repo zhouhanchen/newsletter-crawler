@@ -5,6 +5,7 @@ from ai_information_data.monitor_services import monitor_service
 import ai_information_data.service as service
 from utils import redis_utils as redis
 from tortoise import Tortoise
+from ai_information_data.sync_tj_service import sync_tj_service
 
 
 class TodoUrlReq(BaseModel):
@@ -114,3 +115,7 @@ async def get(req: dict):
         return None
 
 
+@api_aid.get("/sync_tj")
+async def sync_tj():
+    await sync_tj_service()
+    return {"message": "sync_tj completed successfully"}

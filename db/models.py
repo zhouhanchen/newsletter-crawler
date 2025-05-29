@@ -51,9 +51,9 @@ class MonitorSite(Model):
 class TodoCleanData(Model):
     id = fields.BigIntField(pk=True)
     task_id = fields.BigIntField(null=True)
-    url = fields.CharField(max_length=1000, null=True, description='链接')
-    title = fields.CharField(max_length=2000, null=True, description='title')
-    publish_time = fields.DatetimeField(null=True, description='发布时间')
+    url = fields.CharField(max_length=1000, null=True)
+    title = fields.CharField(max_length=1000, null=True)
+    publish_time = fields.DatetimeField(null=True)
     website_info_id = fields.BigIntField(null=True, description='网站信息id')
     region = fields.CharField(max_length=100, null=True, description='区域')
     country = fields.CharField(max_length=100, null=True, description='国家/地区')
@@ -63,17 +63,18 @@ class TodoCleanData(Model):
     article_category = fields.CharField(max_length=100, null=True, description='文章分类')
     regional_scope = fields.CharField(max_length=100, null=True, description='地区范围')
     identification_source = fields.CharField(max_length=100, null=True, description='标识来源')
+    attachment = fields.TextField(null=True)
     lang = fields.CharField(max_length=20, null=True, description='网站语言')
-    lang_site = fields.CharField(max_length=20, null=True, description='网站语言')
-    attachment = fields.TextField(null=True, description='附件 url')
     create_time = fields.DatetimeField(null=True, description='创建时间')
     update_time = fields.DatetimeField(null=True, description='更新时间')
-    status = fields.IntField(default=0, null=True, description='状态 0:未处理 1:已处理')
-    retry_num = fields.IntField(default=0, null=True, description='重试次数')
+    status = fields.IntField(default=0, description='状态 0:未处理 1:已处理')
+    lang_site = fields.CharField(max_length=20, null=True)
+    retry_num = fields.IntField(default=0, description='重试次数')
+    content = fields.TextField(null=True)
+    pull_time = fields.DatetimeField(auto_now_add=True, description='拉取时间')
 
     class Meta:
         table = 'todo_clean_data'
-        table_description = '待清洗数据模型'
 
 
 class TjPushLog(Model):
