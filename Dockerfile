@@ -19,7 +19,7 @@ COPY . .
 RUN uv sync
 
 # 暴露服务端口
-EXPOSE 3009
+EXPOSE 3001
 
 # 启动应用
 CMD ["uv", "run", "main.py"]
