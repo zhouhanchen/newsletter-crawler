@@ -77,4 +77,4 @@ async def sync_tj_service():
     formated_time = now.strftime('%Y%m%d')
     key = f'/newsletter_data/{formated_time}/data.json'
     upload_file(local_path, key)
-    log.info("上传完成")
+    log.info("上传完成, 上传数据{}条".format(len(list_data)))

@@ -2,15 +2,18 @@ from qcloud_cos import CosConfig
 from qcloud_cos import CosS3Client
 import sys
 import logging
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 
-id = ''
-key = ''
+secret_id = os.getenv('COS_SECRET_ID')
+secret_key = os.getenv('COS_SECRET_KEY')
 token = None
-region = 'ap-singapore'
-config = CosConfig(Region=region, SecretId=id, SecretKey=key, Token=token)
+region = os.getenv('COS_REGION')
+config = CosConfig(Region=region, SecretId=secret_id, SecretKey=secret_key, Token=token)
 # 2. 获取客户端对象
 client = CosS3Client(config)
 
@@ -23,4 +26,3 @@ def upload_file(local_path: str, key: str):
         Key=key  # 上传到 COS 上的文件名
     )
     print(response)
-
